@@ -8,7 +8,6 @@ package crypto
 
 import (
 	"encoding/hex"
-	"fmt"
 	"strings"
 	"testing"
 
@@ -80,11 +79,10 @@ func TestCompressDecompress(t *testing.T) {
 	require.NoError(err)
 	pub, err := DecompressPubkey(compressd)
 	require.NoError(err)
-
-	fmt.Println(hex.EncodeToString(pub.EcdsaPublicKey().X.Bytes()))
-	fmt.Println(hex.EncodeToString(pub.EcdsaPublicKey().Y.Bytes()))
-	require.Equal("40a609475afa1f9a784cad0db5d5ba7dbaab2147a5d7b9bbde4d1334a0e40a5e", pub.EcdsaPublicKey().X.Text(10))
-	require.Equal("188ac3f1c6bbbc336fdc33cb5e605ff7c3ee2d36249933b0322220a616a11fb3", pub.EcdsaPublicKey().Y.String())
+	x := hex.EncodeToString(pub.EcdsaPublicKey().X.Bytes())
+	y := hex.EncodeToString(pub.EcdsaPublicKey().Y.Bytes())
+	require.Equal("40a609475afa1f9a784cad0db5d5ba7dbaab2147a5d7b9bbde4d1334a0e40a5e", x)
+	require.Equal("188ac3f1c6bbbc336fdc33cb5e605ff7c3ee2d36249933b0322220a616a11fb3", y)
 	com := CompressPubkey(pub)
 	require.Equal(compressedString, hex.EncodeToString(com))
 }
