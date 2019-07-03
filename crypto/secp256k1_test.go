@@ -43,4 +43,7 @@ func TestSecp256k1(t *testing.T) {
 	}
 	sig[secp256pubKeyLength-1] = 2
 	require.False(pk.Verify(h[:], sig))
+
+	sig[secp256pubKeyLength-1] += 27 - 2
+	require.True(pk.Verify(h[:], sig))
 }
