@@ -31,6 +31,11 @@ func TestKeypair(t *testing.T) {
 
 	pubKey, err := HexStringToPublicKey(publicKey)
 	require.NoError(err)
+
+	pubKey2, err := HexStringToPublicKey(publicKey[1:])
+	require.NoError(err)
+	require.Equal(pubKey, pubKey2)
+
 	priKey, err := HexStringToPrivateKey(privateKey)
 	require.NoError(err)
 
@@ -70,4 +75,5 @@ func TestCompatibility(t *testing.T) {
 	addr, err := address.FromBytes(nsk.PublicKey().Hash())
 	require.NoError(err)
 	require.Equal(ethAddr.Bytes(), addr.Bytes())
+
 }
