@@ -46,7 +46,9 @@ func newSm2PrvKey() (PrivateKey, error) {
 // newSm2PrvKeyFromBytes converts bytes format to PrivateKey
 func newSm2PrvKeyFromBytes(b []byte) (PrivateKey, error) {
 	c := sm2.P256Sm2()
-	priv := &sm2PrvKey{}
+	priv := &sm2PrvKey{
+		PrivateKey: new(sm2.PrivateKey),
+	}
 	priv.PrivateKey.PublicKey.Curve = c
 	priv.PrivateKey.D = big.NewInt(0).SetBytes(b)
 	priv.PrivateKey.PublicKey.X, priv.PrivateKey.PublicKey.Y = c.ScalarBaseMult(b)
