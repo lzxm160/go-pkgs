@@ -143,7 +143,7 @@ func (k *sm2PubKey) Hash() []byte {
 // Verify verifies the signature
 func (k *sm2PubKey) Verify(hash, sig []byte) bool {
 	r := big.NewInt(0).SetBytes(sig[:secp256prvKeyLength])
-	s := big.NewInt(0).SetBytes(sig[secp256prvKeyLength:secp256pubKeyLength])
+	s := big.NewInt(0).SetBytes(sig[secp256prvKeyLength : secp256pubKeyLength-1])
 	fmt.Println(r.Bytes())
 	fmt.Println(s.Bytes())
 
