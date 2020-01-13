@@ -142,10 +142,18 @@ func (k *sm2PubKey) Hash() []byte {
 
 // Verify verifies the signature
 func (k *sm2PubKey) Verify(hash, sig []byte) bool {
+	if len(sig) != secp256pubKeyLength {
+		return false
+	}
+	// signature must be in the [R || S || V] format where V is 0 or 1
+	v := sig[secp256pubKeyLength-1]
+	if v >= 27 {
+		v -= 27
+	}
+	if !(v == 0 || v == 1) {
+		return false
+	}
 	r := big.NewInt(0).SetBytes(sig[:secp256prvKeyLength])
 	s := big.NewInt(0).SetBytes(sig[secp256prvKeyLength : secp256pubKeyLength-1])
-	fmt.Println(r.Bytes())
-	fmt.Println(s.Bytes())
-
 	return sm2.Verify(k.PublicKey, hash, r, s)
 }
