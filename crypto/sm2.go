@@ -9,6 +9,7 @@ package crypto
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 
 	"github.com/pkg/errors"
@@ -90,6 +91,9 @@ func (k *sm2PrvKey) Sign(hash []byte) ([]byte, error) {
 	copy(ret[:len(rb)], rb)
 	copy(ret[len(rb):], sb)
 	ret[64] = 0
+	fmt.Println("r:", rb)
+	fmt.Println("s:", sb)
+	fmt.Println(ret)
 	return ret, nil
 }
 
