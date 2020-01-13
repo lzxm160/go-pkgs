@@ -84,15 +84,20 @@ func (k *sm2PrvKey) Sign(hash []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	rb := r.Bytes()
-	sb := s.Bytes()
-
-	ret := make([]byte, len(rb)+len(sb)+1)
-	copy(ret[:len(rb)], rb)
-	copy(ret[len(rb):], sb)
-	ret[64] = 0
-	fmt.Println("r:", rb)
-	fmt.Println("s:", sb)
+	ret, err := sm2.SignDigitToSignData(r, s)
+	if err != nil {
+		return nil, err
+	}
+	ret = append(ret, 0)
+	//rb := r.Bytes()
+	//sb := s.Bytes()
+	//
+	//ret := make([]byte, len(rb)+len(sb)+1)
+	//copy(ret[:len(rb)], rb)
+	//copy(ret[len(rb):], sb)
+	//ret[64] = 0
+	//fmt.Println("r:", rb)
+	//fmt.Println("s:", sb)
 	fmt.Println(ret)
 	return ret, nil
 }
