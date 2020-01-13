@@ -35,7 +35,7 @@ func TestSm2(t *testing.T) {
 	sig, err := sk.Sign(h[:])
 	require.NoError(err)
 	fmt.Println(len(sig))
-	require.True(sig[33-1] == 0 || sig[33-1] == 1)
+	require.True(sig[secp256prvKeyLength-1] == 0 || sig[secp256prvKeyLength-1] == 1)
 	require.True(pk.Verify(h[:], sig))
 	for i := 0; i < len(sig)-1; i++ {
 		fsig := make([]byte, len(sig))
