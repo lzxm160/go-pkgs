@@ -9,6 +9,7 @@ package crypto
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 
 	"github.com/pkg/errors"
@@ -90,7 +91,8 @@ func (k *sm2PrvKey) Sign(hash []byte) ([]byte, error) {
 	//ret = append(ret, 0)
 	rb := r.Bytes()
 	sb := s.Bytes()
-
+	fmt.Println(r.Bytes())
+	fmt.Println(s.Bytes())
 	ret := make([]byte, len(rb)+len(sb)+1)
 	copy(ret[:len(rb)], rb)
 	copy(ret[len(rb):], sb)
@@ -142,5 +144,8 @@ func (k *sm2PubKey) Hash() []byte {
 func (k *sm2PubKey) Verify(hash, sig []byte) bool {
 	r := big.NewInt(0).SetBytes(sig[:secp256prvKeyLength])
 	s := big.NewInt(0).SetBytes(sig[secp256prvKeyLength:secp256pubKeyLength])
+	fmt.Println(r.Bytes())
+	fmt.Println(s.Bytes())
+
 	return sm2.Verify(k.PublicKey, hash, r, s)
 }
