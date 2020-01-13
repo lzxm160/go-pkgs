@@ -21,19 +21,19 @@ const (
 func TestKeypair(t *testing.T) {
 	require := require.New(t)
 
-	_, err := HexStringToPublicKey("")
+	_, err := HexStringToPublicKey("", false)
 	require.True(strings.Contains(err.Error(), "invalid secp256k1 public key"))
-	_, err = HexStringToPrivateKey("")
+	_, err = HexStringToPrivateKey("", false)
 	require.True(strings.Contains(err.Error(), "invalid length, need 256 bits"))
 
-	pubKey, err := HexStringToPublicKey(publicKey)
+	pubKey, err := HexStringToPublicKey(publicKey, false)
 	require.NoError(err)
 
-	pubKey2, err := HexStringToPublicKey(publicKey[2:])
+	pubKey2, err := HexStringToPublicKey(publicKey[2:], false)
 	require.NoError(err)
 	require.Equal(pubKey, pubKey2)
 
-	priKey, err := HexStringToPrivateKey(privateKey)
+	priKey, err := HexStringToPrivateKey(privateKey, false)
 	require.NoError(err)
 
 	require.Equal(publicKey, pubKey.HexString())
@@ -42,23 +42,23 @@ func TestKeypair(t *testing.T) {
 	pubKeyBytes := pubKey.Bytes()
 	priKeyBytes := priKey.Bytes()
 
-	_, err = BytesToPublicKey([]byte{1, 2, 3})
+	_, err = BytesToPublicKey([]byte{1, 2, 3}, false)
 	require.Error(err)
-	_, err = BytesToPrivateKey([]byte{4, 5, 6})
+	_, err = BytesToPrivateKey([]byte{4, 5, 6}, false)
 	require.Error(err)
 
-	pk, err := BytesToPublicKey(pubKeyBytes)
+	pk, err := BytesToPublicKey(pubKeyBytes, false)
 	require.NoError(err)
-	sk, err := BytesToPrivateKey(priKeyBytes)
+	sk, err := BytesToPrivateKey(priKeyBytes, false)
 	require.NoError(err)
 
 	require.Equal(publicKey, pk.HexString())
 	require.Equal(privateKey, sk.HexString())
 
-	_, err = StringToPubKeyBytes("")
+	_, err = StringToPubKeyBytes("", false)
 	require.Error(err)
 
-	_, err = StringToPubKeyBytes(publicKey)
+	_, err = StringToPubKeyBytes(publicKey, false)
 	require.NoError(err)
 }
 

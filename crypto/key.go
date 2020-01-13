@@ -51,30 +51,36 @@ type (
 )
 
 // GenerateKey generates a SECP256K1 PrivateKey
-func GenerateKey() (PrivateKey, error) {
+func GenerateKey(sm2 bool) (PrivateKey, error) {
+	if sm2 {
+		return newSm2PrvKey()
+	}
 	return newSecp256k1PrvKey()
 }
 
 // HexStringToPublicKey decodes a string to SECP256K1 PublicKey
-func HexStringToPublicKey(pubKey string) (PublicKey, error) {
+func HexStringToPublicKey(pubKey string, sm2 bool) (PublicKey, error) {
 	b, err := hex.DecodeString(pubKey)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to decode public key %s", pubKey)
 	}
-	return BytesToPublicKey(b)
+	return BytesToPublicKey(b, sm2)
 }
 
 // HexStringToPrivateKey decodes a string to SECP256K1 PrivateKey
-func HexStringToPrivateKey(prvKey string) (PrivateKey, error) {
+func HexStringToPrivateKey(prvKey string, sm2 bool) (PrivateKey, error) {
 	b, err := hex.DecodeString(prvKey)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to decode public key %s", prvKey)
 	}
-	return BytesToPrivateKey(b)
+	return BytesToPrivateKey(b, sm2)
 }
 
 // BytesToPublicKey converts a byte slice to SECP256K1 PublicKey
-func BytesToPublicKey(pubKey []byte) (PublicKey, error) {
+func BytesToPublicKey(pubKey []byte, sm2 bool) (PublicKey, error) {
+	if sm2 {
+		return newSm2PubKeyFromBytes(pubKey)
+	}
 	if len(pubKey) == 64 {
 		pubKey = append([]byte{4}, pubKey...)
 	}
@@ -82,7 +88,10 @@ func BytesToPublicKey(pubKey []byte) (PublicKey, error) {
 }
 
 // BytesToPrivateKey converts a byte slice to SECP256K1 PrivateKey
-func BytesToPrivateKey(prvKey []byte) (PrivateKey, error) {
+func BytesToPrivateKey(prvKey []byte, sm2 bool) (PrivateKey, error) {
+	if sm2 {
+		return newSm2PrvKeyFromBytes(prvKey)
+	}
 	return newSecp256k1PrvKeyFromBytes(prvKey)
 }
 
@@ -103,12 +112,16 @@ func KeystoreToPrivateKey(account accounts.Account, password string) (PrivateKey
 }
 
 // StringToPubKeyBytes converts a string of public key to byte slice
-func StringToPubKeyBytes(pubKey string) ([]byte, error) {
+func StringToPubKeyBytes(pubKey string, sm2 bool) ([]byte, error) {
 	pubKeyBytes, err := hex.DecodeString(pubKey)
 	if err != nil {
 		return nil, err
 	}
-	if len(pubKeyBytes) != secp256pubKeyLength {
+	if sm2 {
+		if len(pubKeyBytes) != 33 {
+			return nil, errors.Wrap(ErrPublicKey, "Invalid public key length")
+		}
+	} else if len(pubKeyBytes) != secp256pubKeyLength {
 		return nil, errors.Wrap(ErrPublicKey, "Invalid public key length")
 	}
 	return pubKeyBytes, nil
