@@ -9,7 +9,6 @@ package crypto
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
-	"fmt"
 	"math/big"
 
 	"github.com/pkg/errors"
@@ -84,21 +83,18 @@ func (k *sm2PrvKey) Sign(hash []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	ret, err := sm2.SignDigitToSignData(r, s)
-	if err != nil {
-		return nil, err
-	}
-	ret = append(ret, 0)
-	//rb := r.Bytes()
-	//sb := s.Bytes()
-	//
-	//ret := make([]byte, len(rb)+len(sb)+1)
-	//copy(ret[:len(rb)], rb)
-	//copy(ret[len(rb):], sb)
-	//ret[64] = 0
-	//fmt.Println("r:", rb)
-	//fmt.Println("s:", sb)
-	fmt.Println(ret)
+	//ret, err := sm2.SignDigitToSignData(r, s)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//ret = append(ret, 0)
+	rb := r.Bytes()
+	sb := s.Bytes()
+
+	ret := make([]byte, len(rb)+len(sb)+1)
+	copy(ret[:len(rb)], rb)
+	copy(ret[len(rb):], sb)
+	ret[64] = 0
 	return ret, nil
 }
 
@@ -144,11 +140,7 @@ func (k *sm2PubKey) Hash() []byte {
 
 // Verify verifies the signature
 func (k *sm2PubKey) Verify(hash, sig []byte) bool {
-	r, s, err := sm2.SignDataToSignDigit(sig[:len(sig)])
-	if err != nil {
-		return false
-	}
-	fmt.Println(r.Bytes())
-	fmt.Println(s.Bytes())
+	r := big.NewInt(0).SetBytes(sig[:secp256prvKeyLength])
+	s := big.NewInt(0).SetBytes(sig[secp256prvKeyLength:secp256pubKeyLength])
 	return sm2.Verify(k.PublicKey, hash, r, s)
 }
