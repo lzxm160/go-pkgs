@@ -143,5 +143,7 @@ func (k *sm2PubKey) Verify(hash, sig []byte) bool {
 	if err != nil {
 		return false
 	}
+	fmt.Println(r.Bytes())
+	fmt.Println(s.Bytes())
 	return sm2.Verify(k.PublicKey, hash, r, s)
 }

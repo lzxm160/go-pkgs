@@ -34,7 +34,7 @@ func TestSm2(t *testing.T) {
 	h := hash.Hash256b([]byte("test secp256k1 signature så∫jaç∂fla´´3jl©˙kl3∆˚83jl≈¥fjs2"))
 	sig, err := sk.Sign(h[:])
 	require.NoError(err)
-	fmt.Println(len(sig), ":", sig[secp256pubKeyLength-1])
+	fmt.Println(len(sig), ":", sig)
 	require.True(sig[secp256pubKeyLength-1] == 0 || sig[secp256pubKeyLength-1] == 1)
 	require.True(pk.Verify(h[:], sig))
 	for i := 0; i < len(sig)-1; i++ {
