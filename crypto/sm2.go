@@ -139,7 +139,7 @@ func (k *sm2PubKey) Hash() []byte {
 
 // Verify verifies the signature
 func (k *sm2PubKey) Verify(hash, sig []byte) bool {
-	r, s, err := sm2.SignDataToSignDigit(sig)
+	r, s, err := sm2.SignDataToSignDigit(sig[:len(sig)])
 	if err != nil {
 		return false
 	}
