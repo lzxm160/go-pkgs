@@ -9,7 +9,6 @@ package crypto
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
-	"fmt"
 	"math/big"
 
 	"github.com/pkg/errors"
@@ -84,15 +83,8 @@ func (k *sm2PrvKey) Sign(hash []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	//ret, err := sm2.SignDigitToSignData(r, s)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//ret = append(ret, 0)
 	rb := r.Bytes()
 	sb := s.Bytes()
-	fmt.Println(r.Bytes())
-	fmt.Println(s.Bytes())
 	ret := make([]byte, len(rb)+len(sb)+1)
 	copy(ret[:len(rb)], rb)
 	copy(ret[len(rb):], sb)
