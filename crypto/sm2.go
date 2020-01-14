@@ -29,7 +29,10 @@ type (
 	}
 )
 
-var errInvalidPubkey = errors.New("invalid sm2 public key")
+var (
+	errInvalidPubkey = errors.New("invalid sm2 public key")
+	errInvalidPrikey = errors.New("invalid sm2 private key")
+)
 
 //======================================
 // PrivateKey function
@@ -48,6 +51,9 @@ func newSm2PrvKey() (PrivateKey, error) {
 
 // newSm2PrvKeyFromBytes converts bytes format to PrivateKey
 func newSm2PrvKeyFromBytes(b []byte) (PrivateKey, error) {
+	if b == nil || len(b) == 0 {
+		return nil, errInvalidPrikey
+	}
 	c := sm2.P256Sm2()
 	priv := &sm2PrvKey{
 		PrivateKey: new(sm2.PrivateKey),
