@@ -10,6 +10,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 
 	"github.com/pkg/errors"
@@ -58,9 +59,22 @@ func newSm2PrvKeyFromBytes(b []byte) (PrivateKey, error) {
 	priv := &sm2PrvKey{
 		PrivateKey: new(sm2.PrivateKey),
 	}
+
 	priv.PrivateKey.PublicKey.Curve = c
-	priv.PrivateKey.D = big.NewInt(0).SetBytes(b)
+	if 8*len(b) != priv.Params().BitSize {
+		return nil, fmt.Errorf("invalid length, need %d bits", priv.Params().BitSize)
+	}
+	priv.D = new(big.Int).SetBytes(b)
+
+	// The priv.D must not be zero or negative.
+	if priv.D.Sign() <= 0 {
+		return nil, fmt.Errorf("invalid private key, zero or negative")
+	}
+
 	priv.PrivateKey.PublicKey.X, priv.PrivateKey.PublicKey.Y = c.ScalarBaseMult(b)
+	if priv.PrivateKey.PublicKey.X == nil {
+		return nil, errors.New("invalid private key")
+	}
 	return priv, nil
 }
 
