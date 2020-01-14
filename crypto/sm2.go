@@ -8,6 +8,7 @@ package crypto
 
 import (
 	"crypto/ecdsa"
+	"crypto/elliptic"
 	"encoding/hex"
 	"math/big"
 
@@ -27,6 +28,8 @@ type (
 		*sm2.PublicKey
 	}
 )
+
+var errInvalidPubkey = errors.New("invalid sm2 public key")
 
 //======================================
 // PrivateKey function
@@ -106,14 +109,29 @@ func (k *sm2PrvKey) Zero() {
 
 // newSm2PubKeyFromBytes converts bytes format to PublicKey
 func newSm2PubKeyFromBytes(b []byte) (PublicKey, error) {
+	x, y := elliptic.Unmarshal(sm2.P256Sm2(), b)
+	if x == nil {
+		return nil, errInvalidPubkey
+	}
 	return &sm2PubKey{
-		PublicKey: sm2.Decompress(b),
+		PublicKey: &sm2.PublicKey{
+			Curve: sm2.P256Sm2(),
+			X:     x,
+			Y:     y,
+		},
 	}, nil
+	//return &sm2PubKey{
+	//	PublicKey: sm2.Decompress(b),
+	//}, nil
 }
 
 // Bytes returns the public key in bytes representation
 func (k *sm2PubKey) Bytes() []byte {
-	return sm2.Compress(k.PublicKey)
+	//return sm2.Compress(k.PublicKey)
+	if k == nil || k.X == nil || k.Y == nil {
+		return nil
+	}
+	return elliptic.Marshal(sm2.P256Sm2(), k.X, k.Y)
 }
 
 // HexString returns the public key in hex string
