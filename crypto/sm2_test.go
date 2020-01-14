@@ -22,7 +22,7 @@ func TestSm2(t *testing.T) {
 	defer sk.Zero()
 	require.Equal(secp256prvKeyLength, len(sk.Bytes()))
 	pk := sk.PublicKey()
-	require.Equal(33, len(pk.Bytes()))
+	require.Equal(secp256pubKeyLength, len(pk.Bytes()))
 	nsk, err := newSm2PrvKeyFromBytes(sk.Bytes())
 	require.NoError(err)
 	require.Equal(sk, nsk)
