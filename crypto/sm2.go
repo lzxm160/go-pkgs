@@ -114,8 +114,8 @@ func (k *sm2PrvKey) Sign(hash []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	rb := r.Bytes()
-	sb := s.Bytes()
+	rb := math.PaddedBigBytes(r, k.PrivateKey.Params().BitSize/8)
+	sb := math.PaddedBigBytes(s, k.PrivateKey.Params().BitSize/8)
 	ret := make([]byte, len(rb)+len(sb)+1)
 	copy(ret[:len(rb)], rb)
 	copy(ret[len(rb):], sb)
