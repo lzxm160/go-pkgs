@@ -47,4 +47,22 @@ func TestSm2(t *testing.T) {
 
 	sig[secp256pubKeyLength-1] = 2
 	require.False(pk.Verify(h[:], sig))
+
+	h = hash.Hash256b([]byte("1"))
+	sig, err = sk.Sign(h[:])
+	require.NoError(err)
+	require.True(sig[secp256pubKeyLength-1] == 0 || sig[secp256pubKeyLength-1] == 1)
+	require.True(pk.Verify(h[:], sig))
+
+	h = hash.Hash256b([]byte("2"))
+	sig, err = sk.Sign(h[:])
+	require.NoError(err)
+	require.True(sig[secp256pubKeyLength-1] == 0 || sig[secp256pubKeyLength-1] == 1)
+	require.True(pk.Verify(h[:], sig))
+
+	h = hash.Hash256b([]byte("3"))
+	sig, err = sk.Sign(h[:])
+	require.NoError(err)
+	require.True(sig[secp256pubKeyLength-1] == 0 || sig[secp256pubKeyLength-1] == 1)
+	require.True(pk.Verify(h[:], sig))
 }

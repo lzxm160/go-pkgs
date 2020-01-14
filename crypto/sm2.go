@@ -119,7 +119,7 @@ func (k *sm2PrvKey) Sign(hash []byte) ([]byte, error) {
 	ret := make([]byte, len(rb)+len(sb)+1)
 	copy(ret[:len(rb)], rb)
 	copy(ret[len(rb):], sb)
-	ret[64] = 0
+	ret[len(ret)-1] = 0
 	return ret, nil
 }
 
