@@ -74,7 +74,7 @@ func TestSm2Keypair(t *testing.T) {
 	require.True(strings.Contains(err.Error(), "invalid sm2 public key"))
 	_, err = HexStringToPrivateKey("", true)
 	fmt.Println(err)
-	require.True(strings.Contains(err.Error(), "invalid length, need 256 bits"))
+	require.True(strings.Contains(err.Error(), "invalid sm2 private key"))
 
 	pubKey, err := HexStringToPublicKey(sm2publicKey, true)
 	require.NoError(err)
