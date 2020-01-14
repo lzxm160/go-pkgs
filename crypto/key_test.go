@@ -7,7 +7,6 @@
 package crypto
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 
@@ -70,10 +69,8 @@ func TestSm2Keypair(t *testing.T) {
 	require := require.New(t)
 
 	_, err := HexStringToPublicKey("", true)
-	fmt.Println(err)
 	require.True(strings.Contains(err.Error(), "invalid sm2 public key"))
 	_, err = HexStringToPrivateKey("", true)
-	fmt.Println(err)
 	require.True(strings.Contains(err.Error(), "invalid sm2 private key"))
 
 	pubKey, err := HexStringToPublicKey(sm2publicKey, true)
