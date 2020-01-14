@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/pkg/errors"
 	"github.com/tjfoc/gmsm/sm2"
 
@@ -102,6 +103,13 @@ func (k *sm2PrvKey) PublicKey() PublicKey {
 
 // Sign signs the message/hash
 func (k *sm2PrvKey) Sign(hash []byte) ([]byte, error) {
+	if len(hash) != 32 {
+		return nil, fmt.Errorf("hash is required to be exactly 32 bytes (%d)", len(hash))
+	}
+	seckey := math.PaddedBigBytes(k.PrivateKey.D, k.PrivateKey.Params().BitSize/8)
+	defer zeroBytes(seckey)
+	//return secp256k1.Sign(hash, seckey)
+	k.PrivateKey.D = big.NewInt(0).SetBytes(seckey)
 	r, s, err := sm2.Sign(k.PrivateKey, hash)
 	if err != nil {
 		return nil, err
@@ -120,6 +128,12 @@ func (k *sm2PrvKey) Zero() {
 	b := k.D.Bits()
 	for i := range b {
 		b[i] = 0
+	}
+}
+
+func zeroBytes(bytes []byte) {
+	for i := range bytes {
+		bytes[i] = 0
 	}
 }
 
