@@ -117,11 +117,7 @@ func StringToPubKeyBytes(pubKey string, sm2 bool) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if sm2 {
-		if len(pubKeyBytes) != 33 {
-			return nil, errors.Wrap(ErrPublicKey, "Invalid public key length")
-		}
-	} else if len(pubKeyBytes) != secp256pubKeyLength {
+	if len(pubKeyBytes) != secp256pubKeyLength {
 		return nil, errors.Wrap(ErrPublicKey, "Invalid public key length")
 	}
 	return pubKeyBytes, nil
