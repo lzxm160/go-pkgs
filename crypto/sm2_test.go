@@ -7,6 +7,7 @@
 package crypto
 
 import (
+	"encoding/hex"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -60,9 +61,10 @@ func TestSm2(t *testing.T) {
 	require.True(sig[secp256pubKeyLength-1] == 0 || sig[secp256pubKeyLength-1] == 1)
 	require.True(pk.Verify(h[:], sig))
 
-	h = hash.Hash256b([]byte("3"))
-	sig, err = sk.Sign(h[:])
+	b, err := hex.DecodeString("c648180dae87b91eb80499f72f7e1ea5feed12e449bbfecca86bb8070680a47d")
+	require.NoError(err)
+	sig, err = sk.Sign(b[:])
 	require.NoError(err)
 	require.True(sig[secp256pubKeyLength-1] == 0 || sig[secp256pubKeyLength-1] == 1)
-	require.True(pk.Verify(h[:], sig))
+	require.True(pk.Verify(b[:], sig))
 }
